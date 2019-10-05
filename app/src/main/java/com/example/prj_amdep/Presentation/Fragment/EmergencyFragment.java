@@ -1,4 +1,4 @@
-package com.example.prj_amdep;
+package com.example.prj_amdep.Presentation.Fragment;
 
 
 import android.os.Bundle;
@@ -9,14 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.prj_amdep.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BlankFragment extends Fragment {
+public class EmergencyFragment extends Fragment {
 
 
-    public BlankFragment() {
+    public EmergencyFragment() {
         // Required empty public constructor
     }
 
@@ -25,7 +27,7 @@ public class BlankFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank, container, false);
+        return inflater.inflate(R.layout.fragment_emergency, container, false);
     }
 
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".BlankFragment">
+    tools:context=".Presentation.Fragment.EmergencyFragment">
 
     <LinearLayout
         android:id="@+id/lL1"
@@ -17,19 +17,25 @@
 
         <ImageButton
             android:id="@+id/imgBtn1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="231dp"
+            android:layout_height="231dp"
             android:layout_weight="1"
+            android:adjustViewBounds="false"
             android:contentDescription="@string/fui_error_email_does_not_exist"
-            tools:src="@tools:sample/avatars[2]" />
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/police" />
 
         <ImageButton
             android:id="@+id/imgBtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="231dp"
+            android:layout_height="231dp"
             android:layout_weight="1"
             android:contentDescription="@string/noneContentIMG"
-            tools:src="@tools:sample/avatars[3]" />
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/firemen" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -42,19 +48,23 @@
 
         <ImageButton
             android:id="@+id/imgBtn3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="231dp"
+            android:layout_height="231dp"
             android:layout_weight="1"
-            android:contentDescription="@string/noneContentIMG"
-            tools:src="@tools:sample/avatars[2]" />
+            android:contentDescription="@string/fui_error_email_does_not_exist"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/ambulance" />
 
         <ImageButton
             android:id="@+id/imgBtn4"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="231dp"
+            android:layout_height="231dp"
             android:layout_weight="1"
             android:contentDescription="@string/noneContentIMG"
-            tools:src="@tools:sample/avatars[3]" />
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/security" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

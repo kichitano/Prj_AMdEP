@@ -1,6 +1,7 @@
 package com.example.prj_amdep.Presentation;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SOSActivity extends AppCompatActivity {
 
+    //VARIABLE DECLARATION
     private FirebaseAuth firebaseAuth;
 
     @Override
