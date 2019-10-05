@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    tools:context=".Presentation.SignUpActivity">
+
+    <EditText
+        android:id="@+id/txtDNIuser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="4dp"
+        android:autofillHints="@string/noneContentIMG"
+        android:ems="10"
+        android:hint="@string/userDNI"
+        android:inputType="number"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnCheckDNIuser"
+        android:layout_width="307dip"
+        android:layout_height="47dip"
+        android:layout_marginTop="4dp"
+        android:text="@string/userDNICheckBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDNIuser" />
+
+    <EditText
+        android:id="@+id/txtNameUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/userNameTXT"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCheckDNIuser" />
+
+    <EditText
+        android:id="@+id/txtLastnameUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/userLastnameTXT"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNameUser" />
+
+    <EditText
+        android:id="@+id/txtNicknameUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:hint="@string/dialogSignupNickname"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtEmailUser" />
+
+    <EditText
+        android:id="@+id/txtPasswordUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:hint="@string/dialogSignupPassword"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNicknameUser" />
+
+    <Button
+        android:id="@+id/btnSignupSubmit"
+        android:layout_width="307dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/dialogSignupSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPhoneUser" />
+
+    <EditText
+        android:id="@+id/txtPhoneUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:hint="@string/dialogSignupPhone"
+        android:inputType="phone"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPasswordUser" />
+
+    <EditText
+        android:id="@+id/txtEmailUser"
+        android:layout_width="307dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:hint="@string/dialogSignupEmail"
+        android:inputType="textEmailAddress"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtLastnameUser" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

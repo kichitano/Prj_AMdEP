@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Presentation.LoginActivity">
+
+    <ImageView
+        android:id="@+id/imgLogin"
+        android:layout_width="260dip"
+        android:layout_height="260dip"
+        android:layout_marginTop="44dp"
+        android:contentDescription="@string/noneContentIMG"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046"
+        app:srcCompat="@drawable/logo" />
+
+    <EditText
+        android:id="@+id/txtEmail"
+        android:layout_width="243dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="84dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/emailLoginTXT"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imgUserLogin"
+        app:layout_constraintTop_toBottomOf="@+id/imgLogin" />
+
+    <EditText
+        android:id="@+id/txtPassword"
+        android:layout_width="243dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/passwordLoginTXT"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintStart_toEndOf="@+id/imgUserPassword"
+        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="294dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:bottomLeftRadius="100dp"
+        android:bottomRightRadius="100dp"
+        android:text="@string/userLoginBTN"
+        android:topLeftRadius="100dp"
+        android:topRightRadius="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="294dp"
+        android:layout_height="wrap_content"
+        android:text="@string/userSignupBTN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <ImageView
+        android:id="@+id/imgUserLogin"
+        android:layout_width="47dip"
+        android:layout_height="47dip"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="84dp"
+        android:contentDescription="@string/noneContentIMG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgLogin"
+        app:srcCompat="@drawable/user" />
+
+    <ImageView
+        android:id="@+id/imgUserPassword"
+        android:layout_width="47dip"
+        android:layout_height="47dip"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/noneContentIMG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.153"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgUserLogin"
+        app:srcCompat="@drawable/password" />
+</androidx.constraintlayout.widget.ConstraintLayout>

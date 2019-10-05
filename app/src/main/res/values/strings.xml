@@ -1,0 +1,26 @@
+<resources>
+    <string name="noneContentIMG">none</string>
+    <string name="app_name">Prj_AMdEP</string>
+    <string name="emailLoginTXT">Email</string>
+    <string name="passwordLoginTXT">Password</string>
+    <string name="userLoginBTN">Log In</string>
+    <string name="userSignupBTN">Sign Up</string>
+    <string name="userDNI">DNI number</string>
+    <string name="userDNICheckBTN">Check DNI</string>
+    <string name="userNameTXT">Name</string>
+    <string name="userLastnameTXT">Last name</string>
+    <string name="dialogSignupTitle">Sign Up</string>
+    <string name="dialogSignupEmail">Email</string>
+    <string name="dialogSignupNickname">Nickname</string>
+    <string name="dialogSignupPassword">Password</string>
+    <string name="dialogSignupPhone">Phone number</string>
+    <string name="dialogSignupSubmit">Submit !</string>
+    <string name="correctSubmit">Successful registration.</string>
+    <string name="errorSubmit">Failed to register.</string>
+    <string name="Processing">Processing...</string>
+    <string name="loginSuccess">Welcome to AMdEP !</string>
+    <string name="loginError">Error on login !</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

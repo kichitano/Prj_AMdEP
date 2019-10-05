@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1046947525708",
+    "firebase_url": "https://amdep-de472.firebaseio.com",
+    "project_id": "amdep-de472",
+    "storage_bucket": "amdep-de472.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046947525708:android:2e4c49cdd2327e2c9230e9",
+        "android_client_info": {
+          "package_name": "com.example.prj_amdep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046947525708-l02b3r7nfcqtf9998a69s2ngb8sdh725.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.prj_amdep",
+            "certificate_hash": "295ad721ff274c253ec5a0fee3d4ba67c18582ff"
+          }
+        },
+        {
+          "client_id": "1046947525708-f14168t4j1e9poch774q2395ohsk8ub5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArp87t9K76YL5VUfuZJ97EkfBc6EA2PkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046947525708-f14168t4j1e9poch774q2395ohsk8ub5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
