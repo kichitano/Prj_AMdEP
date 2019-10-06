@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Presentation.SOSActivity">
 
-    <fragment
-        android:id="@+id/SOSfragment"
+    <FrameLayout
+        android:id="@+id/fragmentContanier"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </fragment>
+    </FrameLayout>
 
 </LinearLayout>

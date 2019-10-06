@@ -182,61 +182,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
 
-
-        private class signupAsyncTask extends AsyncTask<Void, Void, Boolean> {
-            ProgressDialog progDailog = new ProgressDialog(SignUpActivity.this);
-            boolean pass = false;
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progDailog.setMessage(String.valueOf(R.string.Processing));
-                progDailog.setIndeterminate(true);
-                progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progDailog.setCancelable(false);
-                progDailog.show();
-            }
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                //SET MODEL AS HASHMAP
-                final Map<String,Object> userMap = new HashMap<>();
-                userMap.put("userDNI",userModel.getUserDNI());
-                userMap.put("userName",userModel.getUserName());
-                userMap.put("userLastname",userModel.getUserLastname());
-                userMap.put("userEmail",userModel.getUserEmail());
-                userMap.put("userNickname",userModel.getUserNickname());
-                userMap.put("userPassword",userModel.getUserPassword());
-                userMap.put("userPhone",userModel.getUserPhone());
-                //SEND DATA TO DATABASE
-
-                firebaseAuth.createUserWithEmailAndPassword(userModel.getUserEmail(),userModel.getUserPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            String idUser = firebaseAuth.getCurrentUser().getUid();
-                            databaseReference.child("Users").child(idUser).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(getApplicationContext(), R.string.correctSubmit, Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        Toast.makeText(getApplicationContext(), R.string.errorSubmit, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        }else{
-                            Toast.makeText(getApplicationContext(), R.string.errorSubmit, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                return pass;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean booleans) {
-                super.onPostExecute(booleans);
-            }
-        }
-
         public void submitUser(){
             final ProgressDialog progDailog = new ProgressDialog(SignUpActivity.this);
             boolean pass = false;
