@@ -147,7 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
                     nameValuePair.add(new BasicNameValuePair("dni",strings[0]));
                     //Set the holders to json type so their server knows how to handle the incoming hhtp request
                     httpPost.addHeader("Accept","application/json");
-                    httpPost.addHeader("Authorization", "Bearer w3kbjP54IVt0f00BG6XhWw90JPud2Q57mQHB1gK9");
+                    httpPost.addHeader("Authorization", "Bearer msUXOPXzuMawycrTVfbTHlU9ww95cf6AJBNjbz6F");
                     //Set the payload with the named pair set as above
                     httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair, HTTP.UTF_8));
                     //Execute the post
@@ -184,7 +184,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         public void submitUser(){
             final ProgressDialog progDailog = new ProgressDialog(SignUpActivity.this);
-            boolean pass = false;
             //SET MODEL AS HASHMAP
             final Map<String,Object> userMap = new HashMap<>();
             userMap.put("userDNI",userModel.getUserDNI());
