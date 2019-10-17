@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.prj_amdep.Model.HelpRequestModel;
 import com.example.prj_amdep.Model.StationModel;
+import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.Presentation.SOSActivity;
 import com.example.prj_amdep.R;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,6 +58,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
     private SOSActivity sosActivity;
     private DatabaseReference databaseReference;
     private DatabaseReference rootDatabaseReference;
+    private DatabaseReference userDatabaseReference;
     private DataSnapshot dataSnapshot;
     private StationModel stationModel;
     private HelpRequestModel helpRequestModel;
@@ -67,7 +69,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
     private Date requestDate = Calendar.getInstance().getTime();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-
+    private UserModel userModel;
 
     public EmergencyFragment() {
         // Required empty public constructor
@@ -84,7 +86,8 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
         sosActivity = (SOSActivity) getActivity();
         databaseReference = sosActivity.databaseReference;
         databaseReference = FirebaseDatabase.getInstance().getReference("Stations");
-        rootDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        userDatabaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        rootDatabaseReference = sosActivity.databaseReference.getRoot();
     }
 
     @Override
@@ -97,6 +100,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
         smsManager = SmsManager.getDefault();
         //PREPARE STRUCTURE FOR HELP REQUEST
         helpRequestModel = new HelpRequestModel();
+        userModel = new UserModel();
         //MATCH VARIABLES
         imgBtn1 = view.findViewById(R.id.imgBtn1);
         imgBtn2 = view.findViewById(R.id.imgBtn2);
@@ -108,6 +112,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
         imgBtn3.setOnClickListener(this);
         imgBtn4.setOnClickListener(this);
         //GET NEAREST STATIONS
+        getUserData();
         getStations();
         return view;
     }
@@ -149,42 +154,17 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
                 option = "4";
                 break;
         }
+        sendCoodinates();
         indexStation = nearestStation(Double.parseDouble(latitude),Double.parseDouble(longitude), option,stationModels);
-        new sendCoordinates_callNumber().execute(latitude, longitude);
+        new callNumber().execute();
         Toast.makeText(getContext(), stationModels.get(indexStation).getStationName(), Toast.LENGTH_LONG).show();
     }
 
-    private class sendCoordinates_callNumber extends AsyncTask<String, Integer, String[]> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //SEND MESSAGE
-            smsManager.sendTextMessage(stationModels.get(indexStation).getStationMobile(), null, latitude + " | " + longitude, pendingIntent, null);
-        }
-
+    private class callNumber extends AsyncTask<String, Integer, String[]> {
         @Override
         protected String[] doInBackground(String... strings) {
-            rootDatabaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    helpRequestModel.setUserDNI(dataSnapshot.child("Users").child(sosActivity.firebaseAuth.getCurrentUser().getUid()).child("userDNI").getValue().toString());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            helpRequestModel.setStationID(stationModels.get(indexStation).getStationID());
-            helpRequestModel.setRequestLatitude(latitude);
-            helpRequestModel.setRequestLongitude(longitude);
-            helpRequestModel.setRequestDate(dateFormat.format(requestDate.getTime()));
-            helpRequestModel.setRequestTime(timeFormat.format(requestDate.getTime()));
-            helpRequestModel.setRequestInformation("");
-            helpRequestModel.setRequestTaken("");
-            helpRequestModel.setRequestStatus("Pending");
-            rootDatabaseReference.child("HelpRequest").push().setValue(helpRequestModel);
+            //SEND MESSAGE
+            smsManager.sendTextMessage(stationModels.get(indexStation).getStationMobile(), null, latitude + " | " + longitude, pendingIntent, null);
             return strings;
         }
 
@@ -194,6 +174,19 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
             callIntent.setData(Uri.parse("tel:" + stationModels.get(indexStation).getStationMobile()));
             startActivity(callIntent);
         }
+    }
+
+    private void sendCoodinates(){
+        helpRequestModel.setUserDNI(userModel.getUserDNI());
+        helpRequestModel.setStationID(stationModels.get(indexStation).getStationID());
+        helpRequestModel.setRequestLatitude(latitude);
+        helpRequestModel.setRequestLongitude(longitude);
+        helpRequestModel.setRequestDate(dateFormat.format(requestDate.getTime()));
+        helpRequestModel.setRequestTime(timeFormat.format(requestDate.getTime()));
+        helpRequestModel.setRequestInformation("");
+        helpRequestModel.setRequestTaken("");
+        helpRequestModel.setRequestStatus("Pending");
+        rootDatabaseReference.child("HelpRequest").push().setValue(helpRequestModel);
     }
 
     private void getStations(){
@@ -216,6 +209,19 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
                     //ADD STATION MODEL TO OUR LIST
                     stationModels.add(stationModel);
                 }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getUserData(){
+        //GET USER DATA
+        userDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userModel.setUserDNI(dataSnapshot.child(sosActivity.firebaseAuth.getCurrentUser().getUid()).child("userDNI").getValue().toString());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
