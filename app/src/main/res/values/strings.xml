@@ -20,4 +20,6 @@
     <string name="Processing">Processing...</string>
     <string name="loginSuccess">Welcome to AMdEP !</string>
     <string name="loginError">Error on login !</string>
+    <string name="fragmentEmergency">Emergency</string>
+    <string name="exitSession">Exit...</string>
 </resources>
