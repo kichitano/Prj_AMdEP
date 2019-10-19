@@ -154,8 +154,8 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
                 option = "4";
                 break;
         }
-        sendCoodinates();
         indexStation = nearestStation(Double.parseDouble(latitude),Double.parseDouble(longitude), option,stationModels);
+        sendCoodinates();
         new callNumber().execute();
         Toast.makeText(getContext(), stationModels.get(indexStation).getStationName(), Toast.LENGTH_LONG).show();
     }

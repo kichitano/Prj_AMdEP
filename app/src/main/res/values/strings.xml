@@ -22,4 +22,11 @@
     <string name="loginError">Error on login !</string>
     <string name="fragmentEmergency">Emergency</string>
     <string name="exitSession">Exit...</string>
+    <string name="emergencyTools">Emergency Tools</string>
+    <string name="emergencyCall">Emergency Call</string>
+    <string name="preventMap">Prevent Map</string>
+    <string name="Publications">Publications</string>
+    <string name="emergencyProfile">Profile Settings</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="Logout">Log out</string>
 </resources>
