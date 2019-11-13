@@ -134,7 +134,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         private class postJSON extends AsyncTask<String, Integer, String[]> {
 
-            private String url = "https://consulta.pe/api/reniec/dni";
+            //private String url = "https://consulta.pe/api/reniec/dni";
+            private String url = "http://www.dayangels.com/api/reniec/";
             String[] userData = new String[2];
 
             @Override
@@ -144,10 +145,11 @@ public class SignUpActivity extends AppCompatActivity {
                     HttpPost httpPost = new HttpPost(url);
                     List<NameValuePair> nameValuePair = new ArrayList<>();
                     //Holds values that will get sent to the rest service
+                    nameValuePair.add(new BasicNameValuePair("user","kixi.13.7@gmail.com"));
+                    nameValuePair.add(new BasicNameValuePair("pass","cespedes"));
                     nameValuePair.add(new BasicNameValuePair("dni",strings[0]));
                     //Set the holders to json type so their server knows how to handle the incoming http request
-                    httpPost.addHeader("Accept","application/json");
-                    httpPost.addHeader("Authorization", "Bearer QBGnEtu9epRNSCQGlA6HNCiAWLZeOwXwOxjjMOWL");
+                    httpPost.addHeader("Content-Type","application/json");
                     //Set the payload with the named pair set as above
                     httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair, HTTP.UTF_8));
                     //Execute the post
@@ -159,8 +161,10 @@ public class SignUpActivity extends AppCompatActivity {
                         // parsing JSON
                         JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
                         userData[0] = result.getString("nombres");
-                        String userLastName1 = result.getString("apellido_paterno");
-                        String userLastName2 = result.getString("apellido_materno");
+                        //String userLastName1 = result.getString("apellido_paterno");
+                        //String userLastName2 = result.getString("apellido_materno");
+                        String userLastName1 = result.getString("paterno");
+                        String userLastName2 = result.getString("materno");
                         userData[1] = userLastName1 + " " + userLastName2;
                     }
                     return userData;

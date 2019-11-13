@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.prj_amdep.Presentation.Fragment.EmergencyFragment;
 import com.example.prj_amdep.Presentation.Fragment.PreventMapFragment;
+import com.example.prj_amdep.Presentation.Fragment.PublicationsFragment;
 import com.example.prj_amdep.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -131,6 +133,21 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     //PUT FRAGMENT IN CONTAINER
                     fragmentTransaction.replace(R.id.fragmentContanier, preventMapFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    //COMMIT TRANSACTION
+                    fragmentTransaction.commit();
+                }
+                break;
+            }
+            case R.id.nav_publications:{
+                FrameLayout frameLayout = findViewById(R.id.fragmentContanier);
+                frameLayout.removeAllViews();
+                PublicationsFragment publicationsFragment = new PublicationsFragment();
+                if(!(getCurrentFragment().equals(publicationsFragment))){
+                    //GET THE FRAGMENT TO REPLACE ACTUAL
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    //PUT FRAGMENT IN CONTAINER
+                    fragmentTransaction.replace(R.id.fragmentContanier, publicationsFragment);
                     fragmentTransaction.addToBackStack(null);
                     //COMMIT TRANSACTION
                     fragmentTransaction.commit();

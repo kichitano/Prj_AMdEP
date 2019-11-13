@@ -155,9 +155,11 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
                 break;
         }
         indexStation = nearestStation(Double.parseDouble(latitude),Double.parseDouble(longitude), option,stationModels);
-        sendCoodinates();
-        new callNumber().execute();
-        Toast.makeText(getContext(), stationModels.get(indexStation).getStationName(), Toast.LENGTH_LONG).show();
+        if ( indexStation != -1 ){
+            sendCoodinates();
+            new callNumber().execute();
+            Toast.makeText(getContext(), stationModels.get(indexStation).getStationName(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private class callNumber extends AsyncTask<String, Integer, String[]> {
@@ -256,6 +258,8 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
                         lastResult = dist;
                     }
                 }
+            }else{
+                index = -1;
             }
         }
         return index;

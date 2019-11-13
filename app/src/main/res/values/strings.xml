@@ -37,7 +37,6 @@
     <string name="chooseMenu">Choose one</string>
     <string name="quicklyRoute">Quickly route</string>
     <string name="alternateRoute">Alternate route</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="createPublication">Create a new publication</string>
+    <string name="cretatePublicationTitle">Publication title</string>
 </resources>
