@@ -4,32 +4,32 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <menu>
-            <item android:title="@string/emergencyTools">
+        <item android:title="@string/emergencyTools">
+            <menu>
                 <item
-                    android:id="@+id/nav_emergencyCall"
-                    android:icon="@drawable/emergencyCall"
+                    android:id="@+id/nav_emergencycall"
+                    android:icon="@drawable/emergencycall"
                     android:title="@string/emergencyCall" />
                 <item
-                    android:id="@+id/nav_preventMap"
-                    android:icon="@drawable/preventMap"
+                    android:id="@+id/nav_preventmap"
+                    android:icon="@drawable/preventmap"
                     android:title="@string/preventMap" />
                 <item
-                    android:id="@+id/nap_publications"
+                    android:id="@+id/nav_publications"
                     android:icon="@drawable/publications"
                     android:title="@string/Publications" />
-            </item>
-        </menu>
+            </menu>
+        </item>
     </group>
     <group>
         <item android:title="@string/emergencyProfile">
             <menu>
                 <item
-                    android:id="@+id/nav_share"
+                    android:id="@+id/nav_editprofile"
                     android:icon="@drawable/editprofile"
                     android:title="@string/editProfile" />
                 <item
-                    android:id="@+id/nav_send"
+                    android:id="@+id/nav_logout"
                     android:icon="@drawable/logout"
                     android:title="@string/Logout" />
             </menu>

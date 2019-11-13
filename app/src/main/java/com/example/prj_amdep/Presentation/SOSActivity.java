@@ -13,12 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.prj_amdep.Presentation.Fragment.EmergencyFragment;
+import com.example.prj_amdep.Presentation.Fragment.PreventMapFragment;
 import com.example.prj_amdep.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +37,6 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     private BroadcastReceiver broadcastReceiver;
     public String latitude = "", longitude = "";
     public DatabaseReference databaseReference;
-    EmergencyFragment emergencyFragment;
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
 
@@ -53,7 +55,6 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
                     Bundle extras = intent.getExtras();
                     longitude = extras.getString("Longitude");
                     latitude = extras.getString("Latitude");
-                    //Toast.makeText(SOSActivity.this, latitude + " / " + longitude, Toast.LENGTH_SHORT).show();
                 }
             };
         }
@@ -79,9 +80,10 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        navigationView.setItemIconTintList(null);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
+                R.id.nav_home, R.id.nav_emergencycall, R.id.nav_preventmap,
+                R.id.nav_publications, R.id.nav_editprofile, R.id.nav_logout)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.fragmentContanier);
@@ -109,8 +111,33 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-
-            case R.id.nav_send: {
+            case R.id.nav_emergencycall: {
+                EmergencyFragment emergencyFragment = new EmergencyFragment();
+                if(!(getCurrentFragment().equals(emergencyFragment))){
+                    //GET THE FRAGMENT TO REPLACE ACTUAL
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    //PUT FRAGMENT IN CONTAINER
+                    fragmentTransaction.replace(R.id.fragmentContanier, emergencyFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    //COMMIT TRANSACTION
+                    fragmentTransaction.commit();
+                }
+                break;
+            }
+            case R.id.nav_preventmap:{
+                PreventMapFragment preventMapFragment = new PreventMapFragment();
+                if(!(getCurrentFragment().equals(preventMapFragment))){
+                    //GET THE FRAGMENT TO REPLACE ACTUAL
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    //PUT FRAGMENT IN CONTAINER
+                    fragmentTransaction.replace(R.id.fragmentContanier, preventMapFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    //COMMIT TRANSACTION
+                    fragmentTransaction.commit();
+                }
+                break;
+            }
+            case R.id.nav_logout: {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(getApplicationContext(), R.string.exitSession, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(SOSActivity.this, LoginActivity.class));
@@ -126,5 +153,12 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     private void setNavigationViewListener() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    Fragment getCurrentFragment()
+    {
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.fragmentContanier);
+        return currentFragment;
     }
 }

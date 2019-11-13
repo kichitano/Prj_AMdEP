@@ -29,4 +29,15 @@
     <string name="emergencyProfile">Profile Settings</string>
     <string name="editProfile">Edit Profile</string>
     <string name="Logout">Log out</string>
+    <string name="title_activity_prevent_maps">Map</string>
+    <string name="actualPosition">You are here.</string>
+    <string name="mapSearchText">Search some directions here!</string>
+    <string name="locationNotFound">Location not found!</string>
+    <string name="menuFAM">Menu</string>
+    <string name="chooseMenu">Choose one</string>
+    <string name="quicklyRoute">Quickly route</string>
+    <string name="alternateRoute">Alternate route</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

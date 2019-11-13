@@ -24,7 +24,7 @@
         android:id="@+id/txtEmail"
         android:layout_width="243dp"
         android:layout_height="47dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="84dp"
         android:autofillHints=""
         android:ems="10"

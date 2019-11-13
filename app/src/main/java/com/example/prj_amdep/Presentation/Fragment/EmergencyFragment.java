@@ -54,7 +54,7 @@ public class EmergencyFragment extends Fragment implements View.OnClickListener,
     private String option;
     private int indexStation;
     private LocationManager locationManager;
-    private String latitude, longitude;
+    public String latitude, longitude;
     private SOSActivity sosActivity;
     private DatabaseReference databaseReference;
     private DatabaseReference rootDatabaseReference;

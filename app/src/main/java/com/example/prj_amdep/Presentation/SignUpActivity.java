@@ -142,12 +142,12 @@ public class SignUpActivity extends AppCompatActivity {
                 try{
                     //Set variables
                     HttpPost httpPost = new HttpPost(url);
-                    List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+                    List<NameValuePair> nameValuePair = new ArrayList<>();
                     //Holds values that will get sent to the rest service
                     nameValuePair.add(new BasicNameValuePair("dni",strings[0]));
-                    //Set the holders to json type so their server knows how to handle the incoming hhtp request
+                    //Set the holders to json type so their server knows how to handle the incoming http request
                     httpPost.addHeader("Accept","application/json");
-                    httpPost.addHeader("Authorization", "Bearer msUXOPXzuMawycrTVfbTHlU9ww95cf6AJBNjbz6F");
+                    httpPost.addHeader("Authorization", "Bearer QBGnEtu9epRNSCQGlA6HNCiAWLZeOwXwOxjjMOWL");
                     //Set the payload with the named pair set as above
                     httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair, HTTP.UTF_8));
                     //Execute the post
