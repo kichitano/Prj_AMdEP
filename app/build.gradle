@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.prj_amdep"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.squareup.picasso:picasso:2.5.1'
+    implementation group: 'com.zhihu.android', name: 'matisse', version: '0.5.3-beta3'
 }
-
 apply plugin: 'com.google.gms.google-services'

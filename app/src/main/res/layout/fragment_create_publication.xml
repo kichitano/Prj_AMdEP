@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:textSize="32sp"
         android:layout_gravity="center"
+        android:textColor="@color/cardview_dark_background"
         android:text="@string/createPublication"/>
 
     <RelativeLayout
@@ -28,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="2.5dp"
             android:layout_marginBottom="2.5dp"
-            android:background="#000000"
+            android:background="@color/black_overlay"
             />
     </RelativeLayout>
 
@@ -43,6 +44,23 @@
         android:importantForAutofill="no"
         android:inputType="text" />
 
+    <EditText
+        android:layout_marginTop="5dp"
+        android:inputType="textMultiLine"
+        android:lines="7"
+        android:minLines="5"
+        android:gravity="center|left"
+        android:maxLines="10"
+        android:layout_height="wrap_content"
+        android:layout_width="370dp"
+        android:scrollbars="vertical"
+        android:hint="@string/textPublication"  />
+
+    <Button
+        android:id="@+id/btnAddPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/createPublication" />
 
 
 </LinearLayout>

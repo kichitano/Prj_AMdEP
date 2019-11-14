@@ -39,4 +39,5 @@
     <string name="alternateRoute">Alternate route</string>
     <string name="createPublication">Create a new publication</string>
     <string name="cretatePublicationTitle">Publication title</string>
+    <string name="textPublication">Insert some text here.</string>
 </resources>

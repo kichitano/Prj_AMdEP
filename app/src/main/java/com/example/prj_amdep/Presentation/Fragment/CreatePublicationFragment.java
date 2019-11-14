@@ -1,19 +1,16 @@
 package com.example.prj_amdep.Presentation.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.example.prj_amdep.R;
 
-public class CreatePublicationFragment extends DialogFragment {
+public class CreatePublicationFragment extends DialogFragment implements View.OnClickListener {
 
     public CreatePublicationFragment() {
         // Required empty public constructor
@@ -26,4 +23,16 @@ public class CreatePublicationFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_create_publication, container, false);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+        }
+    }
 }

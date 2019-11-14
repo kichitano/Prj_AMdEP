@@ -24,6 +24,10 @@
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:src="@drawable/fab_add" />
+        android:src="@drawable/addfab"
+        app:backgroundTint="@android:color/transparent"
+        app:maxImageSize="56dp"
+        android:elevation="1dp"
+        android:scaleType="center"/>
 
 </FrameLayout>

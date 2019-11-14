@@ -1,27 +1,31 @@
 package com.example.prj_amdep.Presentation.Fragment;
 
 import android.app.Dialog;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.prj_amdep.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.PicassoEngine;
 
 public class PublicationsFragment extends Fragment implements View.OnClickListener {
 
+    private static final int REQUEST_CODE_CHOOSE = 1;
     private Dialog dialogBuilder;
     private FloatingActionButton floatingActionButton;
+    private Button btnAddPhotosVideos;
 
     public PublicationsFragment() {
         // Required empty public constructor
@@ -51,6 +55,18 @@ public class PublicationsFragment extends Fragment implements View.OnClickListen
             case R.id.fabCreatePublication:
                 showAlertDialog(R.layout.fragment_create_publication);
                 break;
+            case R.id.btnAddPhotos:
+                Matisse.from(getActivity())
+                        .choose(MimeType.ofAll())
+                        .countable(true)
+                        .maxSelectable(9)
+                        .gridExpectedSize(360)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(new PicassoEngine())
+                        .showPreview(false) // Default is `true`
+                        .theme(R.style.Matisse_Dracula)
+                        .forResult(REQUEST_CODE_CHOOSE);
+                break;
         }
     }
 
@@ -58,8 +74,10 @@ public class PublicationsFragment extends Fragment implements View.OnClickListen
         dialogBuilder = new Dialog(getActivity());
         View layoutView = getLayoutInflater().inflate(layout, null);
         dialogBuilder.setContentView(layoutView);
+        btnAddPhotosVideos = layoutView.findViewById(R.id.btnAddPhotos);
         dialogBuilder.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogBuilder.create();
         dialogBuilder.show();
+        btnAddPhotosVideos.setOnClickListener(this);
     }
 }

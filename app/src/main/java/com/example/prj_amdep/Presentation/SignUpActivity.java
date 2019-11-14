@@ -150,6 +150,7 @@ public class SignUpActivity extends AppCompatActivity {
                     nameValuePair.add(new BasicNameValuePair("dni",strings[0]));
                     //Set the holders to json type so their server knows how to handle the incoming http request
                     httpPost.addHeader("Content-Type","application/json");
+                    //httpPost.addHeader("Authorization", "Bearer QBGnEtu9epRNSCQGlA6HNCiAWLZeOwXwOxjjMOWL");               //KEY PASADA
                     //Set the payload with the named pair set as above
                     httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair, HTTP.UTF_8));
                     //Execute the post

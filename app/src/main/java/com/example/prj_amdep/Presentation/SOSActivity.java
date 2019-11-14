@@ -114,6 +114,8 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_emergencycall: {
+                FrameLayout frameLayout = findViewById(R.id.fragmentContanier);
+                frameLayout.removeAllViews();
                 EmergencyFragment emergencyFragment = new EmergencyFragment();
                 if(!(getCurrentFragment().equals(emergencyFragment))){
                     //GET THE FRAGMENT TO REPLACE ACTUAL
@@ -127,6 +129,8 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
                 break;
             }
             case R.id.nav_preventmap:{
+                FrameLayout frameLayout = findViewById(R.id.fragmentContanier);
+                frameLayout.removeAllViews();
                 PreventMapFragment preventMapFragment = new PreventMapFragment();
                 if(!(getCurrentFragment().equals(preventMapFragment))){
                     //GET THE FRAGMENT TO REPLACE ACTUAL
