@@ -2,6 +2,7 @@ package com.example.prj_amdep.Presentation.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,9 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+
+import com.example.prj_amdep.Presentation.SOSActivity;
 import com.example.prj_amdep.R;
 import com.example.prj_amdep.Resources.DirectionsJSONParser;
 import com.example.prj_amdep.Resources.MovableFloatingActionButton;
@@ -41,6 +46,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import org.json.JSONObject;
 
@@ -73,6 +86,7 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
     private ImageButton drivingButton;
     private ImageButton walkingButton;
     private LinearLayout quicklyRoute;
+    private LinearLayout heatMap;
     private String modeRoute;
     private static final int PATTERN_DASH_LENGTH_PX = 20;
     private static final int PATTERN_GAP_LENGTH_PX = 20;
@@ -81,11 +95,20 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
     private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
     private static final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(GAP, DASH);
     private Polyline mPolyline;
+    private SOSActivity sosActivity;
+    private DatabaseReference databaseReference;
+    private List<LatLng> latLngList;
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
 
     @SuppressLint("MissingPermission")
     @Override
     public void onAttach (Context context) {
         super.onAttach(context);
+        //GET DATABASE REFERENCE
+        sosActivity = (SOSActivity) getActivity();
+        databaseReference = sosActivity.databaseReference;
+        databaseReference = FirebaseDatabase.getInstance().getReference("HelpRequest");
     }
 
     @Override
@@ -189,10 +212,12 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
         View layoutView = getLayoutInflater().inflate(layout, null);
         dialogBuilder.setContentView(layoutView);
         quicklyRoute = layoutView.findViewById(R.id.btnQuicklyRoute);
+        heatMap = layoutView.findViewById(R.id.btnHeatMap);
         dialogBuilder.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogBuilder.create();
         dialogBuilder.show();
         quicklyRoute.setOnClickListener(this);
+        heatMap.setOnClickListener(this);
     }
 
 
@@ -215,6 +240,10 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
             case R.id.btnQuicklyRoute:
                 dialogBuilder.dismiss();
                 drawRoute();
+                break;
+            case R.id.btnHeatMap:
+                dialogBuilder.dismiss();
+                getLatLngRecords();
                 break;
         }
     }
@@ -289,7 +318,6 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
     //TASKS TO DECODE POLYLINE
 
     private void drawRoute(){
-
         // Getting URL to the Google Directions API
         String url = getDirectionsUrl(pLatLng, hashMapMarker.get("DESTINY").getPosition());
         DownloadTask downloadTask = new DownloadTask();
@@ -429,5 +457,40 @@ public class PreventMapFragment extends Fragment implements OnMapReadyCallback, 
             }else
                 Toast.makeText(getContext(),"No route is found", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void getLatLngRecords(){
+        latLngList = new ArrayList<>();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final ProgressDialog dialog = new ProgressDialog(getContext());
+                dialog.setMessage(getContext().getResources().getString(R.string.Processing));
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(false);
+                dialog.show();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    latLngList.add(new LatLng(
+                            Double.parseDouble((String)postSnapshot.child("requestLatitude").getValue()),
+                            Double.parseDouble((String)postSnapshot.child("requestLongitude").getValue())
+                    ));
+                }
+                addHeatMap();
+                dialog.dismiss();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void addHeatMap() {
+        List<LatLng> list = latLngList;
+        // Create a heat map tile provider, passing it the latlngs of the police stations.
+        mProvider = new HeatmapTileProvider.Builder()
+                .data(list)
+                .build();
+        // Add a tile overlay to the map, using the heat map tile provider.
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 }
