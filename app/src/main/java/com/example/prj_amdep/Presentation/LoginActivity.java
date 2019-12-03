@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.R;
+import com.example.prj_amdep.Resources.AESCrypt;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private DatabaseReference mDatabase;
     private UserModel userModel;
+    private AESCrypt aesCrypt;
 
 
     @Override
@@ -54,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         userModel = new UserModel();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        aesCrypt = new AESCrypt();
         if (firebaseUser != null) {
             startActivity(new Intent(LoginActivity.this, SOSActivity.class));
             finish();
@@ -97,7 +100,11 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     //LOGIN METHOD
-                    userLogin(txtEmailUser.getText().toString(), txtPasswordUser.getText().toString());
+                    try {
+                        userLogin(txtEmailUser.getText().toString(), txtPasswordUser.getText().toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             btnSignupUser.setOnClickListener(new View.OnClickListener() {
@@ -229,13 +236,13 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void userLogin(String emailUser, String passwordUser) {
+    private void userLogin(String emailUser, String passwordUser) throws Exception {
         final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
         dialog.setMessage(getBaseContext().getResources().getString(R.string.Processing));
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.show();
-        firebaseAuth.signInWithEmailAndPassword(emailUser, passwordUser).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(emailUser, aesCrypt.encryptPassword(passwordUser)).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){

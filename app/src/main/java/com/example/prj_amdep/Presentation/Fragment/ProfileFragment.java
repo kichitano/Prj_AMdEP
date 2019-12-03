@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -31,12 +33,19 @@ import android.widget.Toast;
 import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.Presentation.SOSActivity;
 import com.example.prj_amdep.R;
+import com.example.prj_amdep.Resources.AESCrypt;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -54,6 +63,7 @@ import static android.media.MediaRecorder.VideoSource.CAMERA;
 public class ProfileFragment extends Fragment {
 
     private UserModel userModel;
+    private String newPassword = "";
     private SOSActivity sosActivity;
     private String m_Text = "";
     private TextView editUserInfo;
@@ -69,6 +79,12 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth auth;
     private ProgressDialog mProgressDialog;
     private String selectedPic;
+    private Uri uriPic;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReferenceProfilePic;
+    private DatabaseReference mDatabase;
+    private String TAG = "";
+    private AESCrypt aesCrypt;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -104,16 +120,20 @@ public class ProfileFragment extends Fragment {
         userPhoto = getActivity().findViewById(R.id.userPhoto);
 
         mProgressDialog = new ProgressDialog(getActivity());
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReferenceProfilePic = firebaseStorage.getReference();
         auth = FirebaseAuth.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(userModel.getUserID());
+        aesCrypt = new AESCrypt();
 
         //SET VALUES OF COMPONENTS
         userFullName.setText(userModel.getUserName() + " " + userModel.getUserLastname());
         userPhone.setText(userModel.getUserPhone());
         userEmail.setText(userModel.getUserEmail());
         userNickname.setText(userModel.getUserNickname());
-        userPassword.setText(userModel.getUserPassword());
-        //userPhoto set photo XD
+        userPassword.setText("******");
+        newPassword = userModel.getUserPassword();
+        getUserPic();
 
         //SET LISTENER TO EDIT INFO
         editUserInfo.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +145,7 @@ public class ProfileFragment extends Fragment {
                 }else{
                     editUserInfo.setText("Edit Info");
                     setFocusableClickable(false);
+                    saveChanges();
                 }
             }
         });
@@ -213,8 +234,8 @@ public class ProfileFragment extends Fragment {
                     public void onResult(View v) {
                         m_Text = input.getText().toString();
                         if(!(m_Text.equals(""))){
-                            userNickname.setText(m_Text);
-                            userNickname.setTypeface(null, Typeface.BOLD_ITALIC);
+                            newPassword = m_Text;
+                            userPassword.setTypeface(null, Typeface.BOLD_ITALIC);
                         }
                     }
                 });
@@ -226,12 +247,32 @@ public class ProfileFragment extends Fragment {
                 showPictureDialog();
             }
         });
-
-
-
         setFocusableClickable(false);
     }
 
+    private void getUserPic() {
+        mProgressDialog.setMessage("Getting user pic...");
+        mProgressDialog.show();
+
+        StorageReference picReference = storageReferenceProfilePic.child("images/users/" + userModel.getUserID() + ".jpg");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                userPhoto.setImageBitmap(bmp);
+                mProgressDialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                mProgressDialog.dismiss();
+            }
+        });
+    }
 
     public void setFocusableClickable(Boolean conf){
         userPhone.setClickable(conf);
@@ -313,8 +354,8 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
+        uriPic = null;
         if (resultCode == getActivity().RESULT_CANCELED) {
             return;
         }
@@ -323,7 +364,7 @@ public class ProfileFragment extends Fragment {
                 Uri contentURI = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-                    selectedPic = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmap, userModel.getUserID(),"photo");
+                    uriPic = getImageUri(getContext(), bitmap);
                     userPhoto.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -332,67 +373,97 @@ public class ProfileFragment extends Fragment {
             }
         } else if (requestCode == CAMERA) {
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            uriPic = getImageUri(getContext(), thumbnail);
             userPhoto.setImageBitmap(thumbnail);
-            saveImage(thumbnail);
         }
     }
 
-    public String saveImage(Bitmap myBitmap) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-        File wallpaperDirectory = new File(
-                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-        if (!wallpaperDirectory.exists()) {
-            wallpaperDirectory.mkdirs();
-        }
-
-        try {
-            File f = new File(userModel.getUserID() + ".jpg");
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(getContext(),
-                    new String[]{f.getPath()},
-                    new String[]{"image/jpeg"}, null);
-            fo.close();
-            selectedPic = f.getAbsolutePath();
-            return f.getAbsolutePath();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return "";
-    }
-
-    public void uploadImage(){
-        mProgressDialog.setMessage("Uploading Image...");
-        mProgressDialog.show();
+    public void saveChanges(){
         //get the signed in user
         FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
-        String name = selectedPic;
-        if(!name.equals("")){
-            Uri uri = Uri.fromFile(new File(selectedPic));
-            StorageReference storageReference = mStorageRef.child("images/users/" + userID + "/" + name + ".jpg");
-            storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        if(uriPic != null){
+            mProgressDialog.setMessage("Uploading Image...");
+            mProgressDialog.show();
+            StorageReference imageRef = storageReferenceProfilePic.child("images/users/" + userID + ".jpg");
+
+            imageRef.putFile(uriPic)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mProgressDialog.dismiss();
+                            String profilePicUrl = storageReferenceProfilePic.getDownloadUrl().toString();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //if the upload is not successful
+                            //hiding the progress dialog
+                            mProgressDialog.dismiss();
+                            //and displaying error message
+                            Toast.makeText(getActivity(), exception.getCause().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            //calculating progress percentage
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+//                          //displaying percentage in progress dialog
+                            mProgressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                        }
+                    });
+        }
+
+        try {
+            mProgressDialog.setMessage("Updating data...");
+            mProgressDialog.show();
+            mDatabase.child("userEmail").setValue(userEmail.getText());
+            mDatabase.child("userPhone").setValue(userPhone.getText());
+            mDatabase.child("userNickname").setValue(userNickname.getText());
+            newPassword = aesCrypt.encryptPassword(newPassword);
+            mDatabase.child("userPassword").setValue(newPassword);
+            // Get auth credentials from the user for re-authentication
+            AuthCredential credential = EmailAuthProvider.getCredential(userModel.getUserEmail(), userModel.getUserPassword()); // Current Login Credentials \\
+            // Prompt the user to re-provide their sign-in credentials
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Get a URL to the uploaded content
-                    Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
-                    toastMessage("Upload Success");
-                    mProgressDialog.dismiss();
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d(TAG, "User re-authenticated.");
+                    //Now change your email address \\
+                    //----------------Code for Changing Email Address----------\\
+                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user.updateEmail(userEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User email address updated.");
+                                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User password updated.");
+                                            mProgressDialog.dismiss();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    toastMessage("Upload Failed");
-                    mProgressDialog.dismiss();
-                }
-            })
-            ;
+            });
+        }
+        catch (Exception ex){
+            mProgressDialog.dismiss();
+            ex.printStackTrace();
         }
     }
 
-    private void toastMessage(String message){
-        Toast.makeText(getActivity() ,message, Toast.LENGTH_SHORT).show();
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, userModel.getUserID(), null);
+        return Uri.parse(path);
     }
 }
