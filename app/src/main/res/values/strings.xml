@@ -40,4 +40,12 @@
     <string name="createPublication">Create a new publication</string>
     <string name="cretatePublicationTitle">Publication title</string>
     <string name="textPublication">Insert some text here.</string>
+    <string name="userProfile">Profile</string>
+    <string name="userRecord">userRecord</string>
+    <string name="userPublications">userPublications</string>
+    <string name="countPublications">N of publis</string>
+    <string name="userInfo">User info</string>
+    <string name="recordUser">points of user</string>
+    <string name="editUserProfile">Edit info</string>
+
 </resources>

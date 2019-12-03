@@ -17,12 +17,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,11 +44,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText txtPasswordUser;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private DatabaseReference mDatabase;
+    private UserModel userModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userModel = new UserModel();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
@@ -230,10 +239,27 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, SOSActivity.class));
-                    finish();
+                    mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+                    userModel.setUserID(mDatabase.getKey());
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                userModel.setUserDNI(dataSnapshot.child("userDNI").getValue().toString());
+                                userModel.setUserEmail(dataSnapshot.child("userEmail").getValue().toString());
+                                userModel.setUserLastname(dataSnapshot.child("userLastname").getValue().toString());
+                                userModel.setUserName(dataSnapshot.child("userName").getValue().toString());
+                                userModel.setUserNickname(dataSnapshot.child("userNickname").getValue().toString());
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, SOSActivity.class));
+                                finish();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
                 }else{
                     Toast.makeText(getApplicationContext(), R.string.loginError, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();

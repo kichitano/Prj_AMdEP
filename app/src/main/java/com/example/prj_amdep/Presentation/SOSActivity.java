@@ -1,12 +1,18 @@
 package com.example.prj_amdep.Presentation;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,19 +27,29 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.Presentation.Fragment.EmergencyFragment;
 import com.example.prj_amdep.Presentation.Fragment.PreventMapFragment;
+import com.example.prj_amdep.Presentation.Fragment.ProfileFragment;
 import com.example.prj_amdep.Presentation.Fragment.PublicationsFragment;
 import com.example.prj_amdep.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SOSActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     //VARIABLE DECLARATION
+    private NavigationView navigationView;
+    private View headerView;
+    private ImageView userPhoto;
+    private TextView userNickname;
+    private TextView userEmail;
     public FirebaseUser firebaseUser;
     public FirebaseAuth firebaseAuth;
     private BroadcastReceiver broadcastReceiver;
@@ -41,6 +57,8 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     public DatabaseReference databaseReference;
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
+    private DatabaseReference mDatabase;
+    public UserModel userModel;
 
     @Override
     protected void onStart() {
@@ -96,10 +114,20 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
         //GET CURRENT USER
         firebaseUser = firebaseAuth.getCurrentUser();
         //USER TOAST
-        Toast.makeText(getApplicationContext(), firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
         //GET DATABASE REFERENCE
         databaseReference = FirebaseDatabase.getInstance().getReference();
         setNavigationViewListener();
+        ///GET NAV VIEW
+        navigationView = findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+        //SET COMPONENTS TO VARIABLES
+        userPhoto = headerView.findViewById(R.id.UserPhoto);
+        userNickname = headerView.findViewById(R.id.UserNickname);
+        userEmail = headerView.findViewById(R.id.UserEmail);
+        //GET USER
+        userModel = new UserModel();
+        getUser();
     }
 
     @Override
@@ -158,6 +186,22 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
                 }
                 break;
             }
+            case R.id.nav_editprofile:{
+                FrameLayout frameLayout = findViewById(R.id.fragmentContanier);
+                frameLayout.removeAllViews();
+                ProfileFragment profileFragment = new ProfileFragment();
+                if(!(getCurrentFragment().equals(profileFragment))){
+                    //GET THE FRAGMENT TO REPLACE ACTUAL
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    //PUT FRAGMENT IN CONTAINER
+                    fragmentTransaction.replace(R.id.fragmentContanier, profileFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    //COMMIT TRANSACTION
+                    fragmentTransaction.commit();
+                }
+                break;
+            }
+
             case R.id.nav_logout: {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(getApplicationContext(), R.string.exitSession, Toast.LENGTH_SHORT).show();
@@ -181,5 +225,36 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
         Fragment currentFragment = getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentContanier);
         return currentFragment;
+    }
+
+    private void getUser(){
+        final ProgressDialog dialog = new ProgressDialog(SOSActivity.this);
+        dialog.setMessage(getBaseContext().getResources().getString(R.string.Processing));
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.show();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        userModel.setUserID(mDatabase.getKey());
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    userModel.setUserDNI(dataSnapshot.child("userDNI").getValue().toString());
+                    userModel.setUserEmail(dataSnapshot.child("userEmail").getValue().toString());
+                    userModel.setUserLastname(dataSnapshot.child("userLastname").getValue().toString());
+                    userModel.setUserName(dataSnapshot.child("userName").getValue().toString());
+                    userModel.setUserNickname(dataSnapshot.child("userNickname").getValue().toString());
+                    userModel.setUserPassword(dataSnapshot.child("userPassword").getValue().toString());
+                    userModel.setUserPhone(dataSnapshot.child("userPhone").getValue().toString());
+                    //SET CONTENT ON VIEW
+                    userNickname.setText(userModel.getUserNickname());
+                    userEmail.setText(userModel.getUserEmail());
+                    dialog.dismiss();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }
