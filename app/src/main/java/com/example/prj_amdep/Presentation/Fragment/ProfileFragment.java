@@ -16,6 +16,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +88,9 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference mDatabase;
     private String TAG = "";
     private AESCrypt aesCrypt;
+    private NavigationView navigationView;
+    private View headerView;
+    private ImageView userpic;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -132,7 +138,11 @@ public class ProfileFragment extends Fragment {
         userEmail.setText(userModel.getUserEmail());
         userNickname.setText(userModel.getUserNickname());
         userPassword.setText("******");
-        newPassword = userModel.getUserPassword();
+        try {
+            newPassword = aesCrypt.decryptPassword(userModel.getUserPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         getUserPic();
 
         //SET LISTENER TO EDIT INFO
@@ -445,6 +455,17 @@ public class ProfileFragment extends Fragment {
                                         if (task.isSuccessful()) {
                                             Log.d(TAG, "User password updated.");
                                             mProgressDialog.dismiss();
+                                            navigationView = getActivity().findViewById(R.id.nav_view);
+                                            headerView = navigationView.getHeaderView(0);
+                                            //SET COMPONENTS TO VARIABLES
+                                            userpic = headerView.findViewById(R.id.UserPhoto);
+                                            Bitmap bMap = null;
+                                            try {
+                                                bMap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uriPic);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            userpic.setImageBitmap(bMap);
                                         }
                                     }
                                 });

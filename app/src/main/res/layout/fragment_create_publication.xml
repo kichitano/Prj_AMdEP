@@ -5,6 +5,7 @@
     android:gravity="center"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:backgroundTint="@color/colorFucsia"
     android:background="@drawable/rounded_menu"
     >
 
@@ -41,6 +42,7 @@
         android:layout_marginTop="10dp"
         android:ems="25"
         android:hint="@string/cretatePublicationTitle"
+        android:background="@drawable/botonron"
         android:importantForAutofill="no"
         android:inputType="text" />
 
@@ -54,12 +56,14 @@
         android:layout_height="wrap_content"
         android:layout_width="370dp"
         android:scrollbars="vertical"
+        android:background="@drawable/botonron"
         android:hint="@string/textPublication"  />
 
     <Button
         android:id="@+id/btnAddPhotos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/botonredondo"
         android:text="@string/createPublication" />
 
 

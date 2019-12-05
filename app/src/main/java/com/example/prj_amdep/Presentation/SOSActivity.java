@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ import com.example.prj_amdep.Presentation.Fragment.PreventMapFragment;
 import com.example.prj_amdep.Presentation.Fragment.ProfileFragment;
 import com.example.prj_amdep.Presentation.Fragment.PublicationsFragment;
 import com.example.prj_amdep.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class SOSActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -59,6 +65,8 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     private DrawerLayout drawer;
     private DatabaseReference mDatabase;
     public UserModel userModel;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReferenceProfilePic;
 
     @Override
     protected void onStart() {
@@ -117,6 +125,9 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
         //Toast.makeText(getApplicationContext(), firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
         //GET DATABASE REFERENCE
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        //STORAGE REFERENCE
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReferenceProfilePic = firebaseStorage.getReference();
         setNavigationViewListener();
         ///GET NAV VIEW
         navigationView = findViewById(R.id.nav_view);
@@ -228,6 +239,7 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
     private void getUser(){
+
         final ProgressDialog dialog = new ProgressDialog(SOSActivity.this);
         dialog.setMessage(getBaseContext().getResources().getString(R.string.Processing));
         dialog.setIndeterminate(true);
@@ -249,6 +261,23 @@ public class SOSActivity extends AppCompatActivity implements NavigationView.OnN
                     //SET CONTENT ON VIEW
                     userNickname.setText(userModel.getUserNickname());
                     userEmail.setText(userModel.getUserEmail());
+                    //GET USER PHOTO
+                    StorageReference picReference = storageReferenceProfilePic.child("images/users/" + userModel.getUserID() + ".jpg");
+                    final long ONE_MEGABYTE = 1024 * 1024;
+                    picReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                            userPhoto.setImageBitmap(bmp);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
                     dialog.dismiss();
                 }
             }

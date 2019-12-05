@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.RequestQueue;
 import com.example.prj_amdep.Model.UserModel;
 import com.example.prj_amdep.R;
+import com.example.prj_amdep.Resources.AESCrypt;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -181,7 +182,7 @@ public class SignUpActivity extends AppCompatActivity {
         return response.toString();
     }
 
-    public void submitUser(){
+    public void submitUser() throws Exception {
         final ProgressDialog progDailog = new ProgressDialog(SignUpActivity.this);
         //SET MODEL AS HASHMAP
         final Map<String,Object> userMap = new HashMap<>();
@@ -190,10 +191,12 @@ public class SignUpActivity extends AppCompatActivity {
         userMap.put("userLastname",userModel.getUserLastname());
         userMap.put("userEmail",userModel.getUserEmail());
         userMap.put("userNickname",userModel.getUserNickname());
-        userMap.put("userPassword",userModel.getUserPassword());
+        AESCrypt aesCrypt = new AESCrypt();
+        String temp = aesCrypt.encryptPassword(userModel.getUserPassword());
+        userMap.put("userPassword",temp);
         userMap.put("userPhone",userModel.getUserPhone());
         //SEND DATA TO DATABASE
-        firebaseAuth.createUserWithEmailAndPassword(userModel.getUserEmail(),userModel.getUserPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(userModel.getUserEmail(),temp).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){

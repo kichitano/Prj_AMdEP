@@ -16,23 +16,26 @@
 
         <ImageButton
             android:id="@+id/imgBtn1"
-            android:layout_width="231dp"
-            android:layout_height="231dp"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
             android:layout_weight="1"
             android:adjustViewBounds="false"
             android:contentDescription="@string/noneContentIMG"
             android:cropToPadding="true"
             android:scaleType="fitCenter"
+            android:gravity="center"
+            android:background="@color/blue"
             app:srcCompat="@drawable/police" />
 
         <ImageButton
             android:id="@+id/imgBtn2"
-            android:layout_width="231dp"
-            android:layout_height="231dp"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
             android:layout_weight="1"
             android:contentDescription="@string/noneContentIMG"
             android:cropToPadding="true"
             android:scaleType="fitCenter"
+            android:background="@color/colorAccent"
             app:srcCompat="@drawable/firemen" />
     </LinearLayout>
 
@@ -45,21 +48,23 @@
 
         <ImageButton
             android:id="@+id/imgBtn3"
-            android:layout_width="231dp"
-            android:layout_height="231dp"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
             android:layout_weight="1"
+            android:background="@color/coloazul"
             android:contentDescription="@string/noneContentIMG"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ambulance" />
 
         <ImageButton
             android:id="@+id/imgBtn4"
-            android:layout_width="231dp"
-            android:layout_height="231dp"
+            android:layout_width="225dp"
+            android:layout_height="225dp"
             android:layout_weight="1"
             android:contentDescription="@string/noneContentIMG"
             android:cropToPadding="true"
             android:scaleType="fitCenter"
+            android:background="@color/yellow"
             app:srcCompat="@drawable/security" />
     </LinearLayout>
 

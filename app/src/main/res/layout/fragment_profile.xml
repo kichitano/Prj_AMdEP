@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="#008577" />
+        android:background="#E70808" />
 
     <!--Top Header Layout-->
     <LinearLayout
@@ -207,6 +207,7 @@
                     android:gravity="center"
                     android:padding="13dp"
                     android:text="@string/userInfo"
+                    android:background="@drawable/botonron"
                     android:textAllCaps="true"
                     android:textColor="@color/blue"
                     android:textSize="14sp"
@@ -233,6 +234,7 @@
                 android:id="@+id/personalinfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="18dp"
                 android:orientation="vertical">
 
                 <!--About Me Card-->
@@ -268,6 +270,7 @@
                             android:paddingRight="10dp"
                             android:paddingBottom="5dp"
                             android:text="Edit Info"
+                            android:background="@drawable/botonron"
                             android:textColor="#009688"
                             android:textSize="14sp"
                             android:textStyle="bold" />
